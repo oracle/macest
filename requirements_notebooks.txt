@@ -1,0 +1,5 @@
+autograd==1.3
+dirichletcal==0.3.dev4
+ipykernel==5.5.5
+jax==0.2.17
+jaxlib==0.1.69
