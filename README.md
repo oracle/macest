@@ -242,6 +242,15 @@ macest_point_prediction_conf = macest_model.predict_confidence_of_point_predicti
 See the [`CONTRIBUTING.md`](./CONTRIBUTING.md) file for information about contributing to MACEst.
 
 
+## Related Publications
+
+For more information about the underlying methodology behind MACEst, then please refer to our 
+accompanying research paper that has been shared on arXiv:
+
+* "[MACEst: The reliable and trustworthy Model Agnostic Confidence 
+Estimator](https://arxiv.org/abs/2109.01531). Rhys Green, Matthew Rowe, and Alberto Polleri. 2021."
+
+
 ## License
 Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
 
