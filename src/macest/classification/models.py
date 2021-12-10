@@ -88,6 +88,7 @@ class ModelWithConfidence:
         training_preds_by_class: Optional[Dict[int, np.ndarray]] = None,
         verbose_training: bool = True,
         empirical_conflict_constant: float = 0.5,
+        num_threads: int = num_threads_available,
     ):
         """
         Init.
@@ -109,6 +110,7 @@ class ModelWithConfidence:
         :param verbose_training:  If true, information such as training progress will be shown
         :param empirical_conflict_constant: Constant to set confidence conflicting predictions
             calculated during calibration
+        :param num_threads: Number of threads to use to query the HNSW graph
         """
         self.point_pred_model = point_pred_model
         self.x_train = x_train
@@ -122,6 +124,7 @@ class ModelWithConfidence:
         self.search_method_args = search_method_args
         self._check_consistent_search_method_args()
         self._check_data_consistent_with_search_args()
+        self.num_threads = num_threads
 
         self.training_preds_by_class = training_preds_by_class
         if training_preds_by_class is None:
@@ -204,7 +207,9 @@ class ModelWithConfidence:
                 self.build_class_graphs()
             neighbours = np.array(
                 self.graph[cls].knnQueryBatch(  # type: ignore
-                    x_star, k=self._num_neighbours, num_threads=num_threads_available
+                    x_star,
+                    k=self._num_neighbours,
+                    num_threads=self.num_threads,
                 )
             )
             class_dist = neighbours[:, 1, :].clip(min=10 ** -15)
@@ -506,7 +511,9 @@ class _TrainingHelper(object):
 
             max_neighbours = np.array(
                 self.model.graph[class_num].knnQueryBatch(  # type: ignore
-                    self.x_cal, k=max_nbrs, num_threads=num_threads_available
+                    self.x_cal,
+                    k=max_nbrs,
+                    num_threads=self.model.num_threads,
                 )
             )
             max_dist = max_neighbours[x_cal_len_array, 1]

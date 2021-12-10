@@ -78,6 +78,7 @@ class ModelWithPredictionInterval:
         prec_point_preds: Optional[np.ndarray] = None,
         prec_graph: Optional[nmslib.dist.FloatIndex] = None,
         search_method_args: HnswGraphArgs = HnswGraphArgs(),
+        num_threads: int = num_threads_available,
     ):
         """
         Init.
@@ -95,6 +96,7 @@ class ModelWithPredictionInterval:
         :param prec_distance_to_nn: The pre-computed nearest neighbour distances for the calibration and test data
         :param prec_ind_of_nn: The pre-computed nearest neighbour indices for the calibration and test data
         :param prec_graph: The pre-computed graph to use for online hnsw search
+        :param num_threads: Number of threads to use to query the HNSW graph
         """
         self.model = model
         self.x_train = x_train
@@ -117,6 +119,7 @@ class ModelWithPredictionInterval:
         self.search_method_args = search_method_args
         self._check_consistent_search_method_args()
         self._check_data_consistent_with_search_args()
+        self.num_threads = num_threads
 
     def predict(self, x_star: np.ndarray) -> np.ndarray:
         """
@@ -155,7 +158,9 @@ class ModelWithPredictionInterval:
 
         neighbours = np.array(
             self.prec_graph.knnQueryBatch(
-                x_star, k=self._num_neighbours, num_threads=num_threads_available
+                x_star,
+                k=self._num_neighbours,
+                num_threads=self.num_threads,
             )
         )
         dist = neighbours[:, 1, :]
@@ -436,7 +441,9 @@ class _TrainingHelper(object):
 
         max_neighbours = np.array(
             self.prec_graph.knnQueryBatch(
-                self.x_cal, k=int(max_nbrs), num_threads=num_threads_available
+                self.x_cal,
+                k=int(max_nbrs),
+                num_threads=self.model.num_threads,
             )
         )
 
