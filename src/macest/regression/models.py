@@ -68,9 +68,9 @@ class ModelWithPredictionInterval:
 
     def __init__(
         self,
-        model: _RegressionPointPredictionModel,
         x_train: np.ndarray,
         train_err: np.ndarray,
+        model: _RegressionPointPredictionModel = None,
         macest_model_params: MacestPredIntervalModelParams = MacestPredIntervalModelParams(),
         error_dist: Literal["normal", "laplace"] = "normal",
         dist_func: Literal["linear", "error_weighted_poly"] = "linear",
@@ -96,6 +96,8 @@ class ModelWithPredictionInterval:
         :param prec_ind_of_nn: The pre-computed nearest neighbour indices for the calibration and test data
         :param prec_graph: The pre-computed graph to use for online hnsw search
         """
+        if model is None and prec_point_preds is None:
+            raise ValueError("One of 'model' or 'prec_point_preds' must be specified")
         self.model = model
         self.x_train = x_train
         self.train_err = train_err
@@ -126,6 +128,8 @@ class ModelWithPredictionInterval:
 
         :return: pred_star : The point prediction for x_star
         """
+        if model is None:
+            raise ValueError("Cannot predict as no 'model' has been initialized")
         pred_star = self.model.predict(x_star)
         return pred_star
 
@@ -280,16 +284,23 @@ class ModelWithPredictionInterval:
         return dist
 
     def predict_interval(
-        self, x_star: np.ndarray, conf_level: Union[np.ndarray, int, float] = 90,
+        self,
+        x_star: np.ndarray,
+        prec_point_preds: Optional[np.ndarray] = None,
+        conf_level: Union[np.ndarray, int, float] = 90,
     ) -> np.ndarray:
         """
         Predict the upper and lower prediction interval bounds for a given confidence level.
 
         :param x_star: The position for which we would like to predict
+        :param prec_point_preds: The pre-computed model predictions
         :param conf_level:
 
         :return: The confidence bounds for each x_star for each confidence level
         """
+        if prec_point_preds is not None:
+            self.point_preds = prec_point_preds
+
         dist = self._distribution(x_star)
         lower_perc = (100 - conf_level) / 2
         upper_perc = 100 - lower_perc
@@ -330,6 +341,7 @@ class ModelWithPredictionInterval:
         self,
         x_cal: np.ndarray,
         y_cal: np.ndarray,
+        prec_point_preds: Optional[np.ndarray] = None,
         param_range: SearchBounds = SearchBounds(),
         optimiser_args: Optional[Dict[Any, Any]] = None,
     ) -> None:
@@ -338,11 +350,15 @@ class ModelWithPredictionInterval:
 
         :param x_cal: Calibration data
         :param y_cal: Target values
+        :param prec_point_preds: The pre-computed model predictions
         :param param_range: The bounds within which to search for MACEst parameters
         :param optimiser_args: Any arguments for the optimiser (see scipy.optimize)
 
         :return: None
         """
+        if prec_point_preds is not None:
+            self.point_preds = prec_point_preds
+
         if optimiser_args is None:
             optimiser_args = {}
 
@@ -418,7 +434,8 @@ class _TrainingHelper(object):
         self.prec_graph = self.model.build_graph()
         self.model.prec_graph = self.prec_graph
         self.prec_dist, self.prec_ind = self._prec_neighbours()
-        self.model.point_preds = self.model.predict(self.x_cal)
+        if self.model.point_preds is None:
+            self.model.point_preds = self.model.predict(self.x_cal)
 
     def _prec_neighbours(self) -> Tuple[Dict[int, np.ndarray], Dict[int, np.ndarray]]:
         """

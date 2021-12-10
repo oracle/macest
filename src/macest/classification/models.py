@@ -78,9 +78,9 @@ class ModelWithConfidence:
 
     def __init__(
             self,
-            point_pred_model: _ClassificationPointPredictionModel,
             x_train: np.ndarray,
             y_train: Iterable[int],
+            point_pred_model: _ClassificationPointPredictionModel = None,
             macest_model_params: MacestConfModelParams = MacestConfModelParams(),
             precomputed_neighbour_info: Optional[PrecomputedNeighbourInfo] = None,
             graph: Optional[Dict[int, nmslib.dist.FloatIndex]] = None,
@@ -110,6 +110,9 @@ class ModelWithConfidence:
         :param empirical_conflict_constant: Constant to set confidence conflicting predictions
             calculated during calibration
         """
+        if point_pred_model is None and training_preds_by_class is None:
+            raise ValueError("One of 'point_pred_model' or 'training_preds_by_class'"
+                             "must be specified")
         self.point_pred_model = point_pred_model
         self.x_train = x_train
         self.y_train = y_train
@@ -161,6 +164,8 @@ class ModelWithConfidence:
         :param x_star: The point(s) at which we want to predict
         :return: A point prediction for the given x_star
         """
+        if point_pred_model is None:
+            raise ValueError("Cannot predict as no 'point_pred_model' has been initialized")
         return self.point_pred_model.predict(x_star)
 
     def build_class_graphs(self) -> Dict[int, nmslib.dist.FloatIndex]:
@@ -286,19 +291,26 @@ class ModelWithConfidence:
         return relative_conf
 
     def predict_confidence_of_point_prediction(
-            self, x_star: np.ndarray, change_conflicts: bool = False,
+        self,
+        x_star: np.ndarray,
+        prec_point_preds: Optional[np.ndarray] = None,
+        change_conflicts: bool = False,
     ) -> np.ndarray:
         """
         Estimate a single confidence score, this represents the confidence of the point prediction
         being correct rather than a confidence score for each class.
 
         :param x_star: The point to predict confidently
+        :param prec_point_preds: The pre-computed model predictions
         :param change_conflicts: Boolean, true means conflicting predictions between macest and
             point prediction are set to an empirical constant
 
         :return: The confidence in the point prediction being correct
 
         """
+        if prec_point_preds is not None:
+            self.point_preds = prec_point_preds
+
         if self.point_preds is not None:
             point_prediction = self.point_preds
         else:
@@ -377,6 +389,7 @@ class ModelWithConfidence:
             self,
             x_cal: np.ndarray,
             y_cal: np.ndarray,
+            prec_point_preds: Optional[np.ndarray] = None,
             param_range: SearchBounds = SearchBounds(),
             optimiser_args: Optional[Dict[Any, Any]] = None,
     ) -> None:
@@ -385,11 +398,15 @@ class ModelWithConfidence:
 
         :param x_cal: Calibration data
         :param y_cal: Target values
+        :param prec_point_preds: The pre-computed model predictions
         :param param_range: The bounds within which to search for MACEst parameters
         :param optimiser_args: Any arguments for the optimiser (see scipy.optimize)
 
         :return: None
         """
+        if prec_point_preds is not None:
+            self.point_preds = prec_point_preds
+
         if optimiser_args is None:
             optimiser_args = {}
 
@@ -471,7 +488,8 @@ class _TrainingHelper(object):
         self.precomputed_index = self.precomputed_neighbours[1]
         self.precomputed_error = self.precomputed_neighbours[2]
         self._n_classes = len(np.unique(self.model.y_train))
-        self.model.point_preds = self.model.predict(self.x_cal)
+        if self.model.point_preds is None:
+            self.model.point_preds = self.model.predict(self.x_cal)
         self.model.distance_to_neighbours = self.precomputed_distance
         self.model.index_of_neighbours = self.precomputed_index
         self.model.error_on_neighbours = self.precomputed_error
@@ -576,12 +594,15 @@ class _TrainingHelper(object):
             self,
             optimiser: Literal["de"] = "de",
             optimiser_args: Optional[Dict[Any, Any]] = None,
+            update_empirical_conflict_constant: bool = False,
     ) -> ModelWithConfidence:
         """
         Fit MACEst model using the calibration data.
 
         :param optimiser: The optimisation method
         :param optimiser_args: Any arguments for the optimisation strategy
+        :param update_empirical_conflict_constant: Boolean, true means the constant to set
+            confidence conflicting predictions will be updated at the end of fit
 
         :return: A ModelWithConfidence object with the parameters that minimises the loss function
         """
@@ -619,11 +640,12 @@ class _TrainingHelper(object):
 
         self.model.macest_model_params = self.set_macest_model_params()
 
-        point_preds = self.model.predict(self.x_cal)
-        conflicts = self.model.find_conflicting_predictions(self.x_cal)
-        self.model.empirical_conflict_constant = np.array(
-            point_preds[conflicts] == self.y_cal[conflicts]
-        ).mean()
+        if update_empirical_conflict_constant:
+            point_preds = self.model.predict(self.x_cal)
+            conflicts = self.model.find_conflicting_predictions(self.x_cal)
+            self.model.empirical_conflict_constant = np.array(
+                point_preds[conflicts] == self.y_cal[conflicts]
+            ).mean()
 
         self.model.distance_to_neighbours = None
         self.model.index_of_neighbours = None
