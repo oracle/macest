@@ -88,7 +88,7 @@ class ModelWithConfidence:
         training_preds_by_class: Optional[Dict[int, np.ndarray]] = None,
         verbose_training: bool = True,
         empirical_conflict_constant: float = 0.5,
-        num_threads: int = num_threads_available,
+        num_threads: Optional[int] = num_threads_available,
     ):
         """
         Init.

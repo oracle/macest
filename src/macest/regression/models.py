@@ -78,7 +78,7 @@ class ModelWithPredictionInterval:
         prec_point_preds: Optional[np.ndarray] = None,
         prec_graph: Optional[nmslib.dist.FloatIndex] = None,
         search_method_args: HnswGraphArgs = HnswGraphArgs(),
-        num_threads: int = num_threads_available,
+        num_threads: Optional[int] = num_threads_available,
     ):
         """
         Init.
