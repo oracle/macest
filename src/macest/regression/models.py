@@ -156,7 +156,8 @@ class ModelWithPredictionInterval:
         neighbours = np.array(
             self.prec_graph.knnQueryBatch(
                 x_star, k=self._num_neighbours, num_threads=num_threads_available
-            )
+            ),
+            dtype='float32',
         )
         dist = neighbours[:, 1, :]
         ind = neighbours[:, 0, :].astype(int)
@@ -437,7 +438,8 @@ class _TrainingHelper(object):
         max_neighbours = np.array(
             self.prec_graph.knnQueryBatch(
                 self.x_cal, k=int(max_nbrs), num_threads=num_threads_available
-            )
+            ),
+            dtype='float32',
         )
 
         max_dist = max_neighbours[x_cal_len_array, 1]
