@@ -80,7 +80,7 @@ class ModelWithConfidence:
             self,
             x_train: np.ndarray,
             y_train: Iterable[int],
-            point_pred_model: _ClassificationPointPredictionModel = None,
+            point_pred_model: Optional[_ClassificationPointPredictionModel] = None,
             macest_model_params: MacestConfModelParams = MacestConfModelParams(),
             precomputed_neighbour_info: Optional[PrecomputedNeighbourInfo] = None,
             graph: Optional[Dict[int, nmslib.dist.FloatIndex]] = None,

@@ -70,7 +70,7 @@ class ModelWithPredictionInterval:
         self,
         x_train: np.ndarray,
         train_err: np.ndarray,
-        model: _RegressionPointPredictionModel = None,
+        model: Optional[_RegressionPointPredictionModel] = None,
         macest_model_params: MacestPredIntervalModelParams = MacestPredIntervalModelParams(),
         error_dist: Literal["normal", "laplace"] = "normal",
         dist_func: Literal["linear", "error_weighted_poly"] = "linear",
