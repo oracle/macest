@@ -128,7 +128,7 @@ class ModelWithPredictionInterval:
 
         :return: pred_star : The point prediction for x_star
         """
-        if model is None:
+        if self.model is None:
             raise ValueError("Cannot predict as no 'model' has been initialized")
         pred_star = self.model.predict(x_star)
         return pred_star

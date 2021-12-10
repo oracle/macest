@@ -164,7 +164,7 @@ class ModelWithConfidence:
         :param x_star: The point(s) at which we want to predict
         :return: A point prediction for the given x_star
         """
-        if point_pred_model is None:
+        if self.point_pred_model is None:
             raise ValueError("Cannot predict as no 'point_pred_model' has been initialized")
         return self.point_pred_model.predict(x_star)
 
@@ -594,7 +594,7 @@ class _TrainingHelper(object):
             self,
             optimiser: Literal["de"] = "de",
             optimiser_args: Optional[Dict[Any, Any]] = None,
-            update_empirical_conflict_constant: bool = False,
+            update_empirical_conflict_constant: bool = True,
     ) -> ModelWithConfidence:
         """
         Fit MACEst model using the calibration data.
