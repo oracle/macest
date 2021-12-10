@@ -77,17 +77,17 @@ class ModelWithConfidence:
     """This class creates a model which returns a prediction and a confidence interval."""
 
     def __init__(
-            self,
-            point_pred_model: _ClassificationPointPredictionModel,
-            x_train: np.ndarray,
-            y_train: Iterable[int],
-            macest_model_params: MacestConfModelParams = MacestConfModelParams(),
-            precomputed_neighbour_info: Optional[PrecomputedNeighbourInfo] = None,
-            graph: Optional[Dict[int, nmslib.dist.FloatIndex]] = None,
-            search_method_args: HnswGraphArgs = HnswGraphArgs(),
-            training_preds_by_class: Optional[Dict[int, np.ndarray]] = None,
-            verbose_training: bool = True,
-            empirical_conflict_constant: float = 0.5,
+        self,
+        point_pred_model: _ClassificationPointPredictionModel,
+        x_train: np.ndarray,
+        y_train: Iterable[int],
+        macest_model_params: MacestConfModelParams = MacestConfModelParams(),
+        precomputed_neighbour_info: Optional[PrecomputedNeighbourInfo] = None,
+        graph: Optional[Dict[int, nmslib.dist.FloatIndex]] = None,
+        search_method_args: HnswGraphArgs = HnswGraphArgs(),
+        training_preds_by_class: Optional[Dict[int, np.ndarray]] = None,
+        verbose_training: bool = True,
+        empirical_conflict_constant: float = 0.5,
     ):
         """
         Init.
@@ -187,7 +187,7 @@ class ModelWithConfidence:
         return self.graph
 
     def calc_dist_to_neighbours(
-            self, x_star: np.ndarray, cls: int
+        self, x_star: np.ndarray, cls: int
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Calculate the distance to nearest neighbours, the index of them within the class graph and
@@ -239,7 +239,7 @@ class ModelWithConfidence:
         return neighbour_info
 
     def calc_linear_distance_error_func(
-            self, local_distance: np.ndarray, local_error: np.ndarray,
+        self, local_distance: np.ndarray, local_error: np.ndarray,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Calculate the parametric linear distance function using the local error and distance.
@@ -260,7 +260,7 @@ class ModelWithConfidence:
         return dist, error
 
     def predict_proba(
-            self, x_star: np.ndarray, change_conflicts: bool = False,
+        self, x_star: np.ndarray, change_conflicts: bool = False,
     ) -> np.ndarray:
         """
         Compute a confidence score for each class for a given points(s) x_star.
@@ -286,7 +286,7 @@ class ModelWithConfidence:
         return relative_conf
 
     def predict_confidence_of_point_prediction(
-            self, x_star: np.ndarray, change_conflicts: bool = False,
+        self, x_star: np.ndarray, change_conflicts: bool = False,
     ) -> np.ndarray:
         """
         Estimate a single confidence score, this represents the confidence of the point prediction
@@ -312,7 +312,7 @@ class ModelWithConfidence:
         return point_prediction_confidence
 
     def _calc_relative_distance_softmax_normalisation(
-            self, average_distance_error_func: np.ndarray,
+        self, average_distance_error_func: np.ndarray,
     ) -> np.ndarray:
         """
         Take a vector of distance functions, we then scale these by the mean distance across
@@ -332,7 +332,7 @@ class ModelWithConfidence:
         return relative_conf
 
     def _renormalise_conf_with_empirical_constant(
-            self, x_star: np.ndarray, conf_array: np.ndarray
+        self, x_star: np.ndarray, conf_array: np.ndarray
     ) -> np.ndarray:
         """
         Change conflicting predictions to the empirically learnt constant probability learnt during \
@@ -374,11 +374,11 @@ class ModelWithConfidence:
         return conflicting_predictions
 
     def fit(
-            self,
-            x_cal: np.ndarray,
-            y_cal: np.ndarray,
-            param_range: SearchBounds = SearchBounds(),
-            optimiser_args: Optional[Dict[Any, Any]] = None,
+        self,
+        x_cal: np.ndarray,
+        y_cal: np.ndarray,
+        param_range: SearchBounds = SearchBounds(),
+        optimiser_args: Optional[Dict[Any, Any]] = None,
     ) -> None:
         """
         Fit MACEst model using the calibration data.
@@ -447,11 +447,11 @@ class _TrainingHelper(object):
     """Class which provides methods used when fitting MACEst model."""
 
     def __init__(
-            self,
-            init_conf_model: ModelWithConfidence,
-            x_cal: np.ndarray,
-            y_cal: np.ndarray,
-            param_range: SearchBounds = SearchBounds(),
+        self,
+        init_conf_model: ModelWithConfidence,
+        x_cal: np.ndarray,
+        y_cal: np.ndarray,
+        param_range: SearchBounds = SearchBounds(),
     ):
         """
         Init.
@@ -573,9 +573,9 @@ class _TrainingHelper(object):
         return expected_calibration_error(self.model.point_preds, self.y_cal, pred_conf)
 
     def fit(
-            self,
-            optimiser: Literal["de"] = "de",
-            optimiser_args: Optional[Dict[Any, Any]] = None,
+        self,
+        optimiser: Literal["de"] = "de",
+        optimiser_args: Optional[Dict[Any, Any]] = None,
     ) -> ModelWithConfidence:
         """
         Fit MACEst model using the calibration data.
