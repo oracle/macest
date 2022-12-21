@@ -108,7 +108,7 @@ source venv/bin/activate
 Install dependencies and MACEst:
 ```
 pip install -r requirements.txt
-pip install -r notebook_requirements.txt
+pip install -r requirements_notebooks.txt
 pip install macest
 ```
 
