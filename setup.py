@@ -13,7 +13,6 @@ REQUIRED = Path("requirements.txt").read_text().splitlines()
 TEST_REQUIRED = Path("test_requirements.txt").read_text().splitlines()
 EXTRAS = {'tests': [TEST_REQUIRED]}
 
-
 version = Path("src/macest/__version__.py").read_text().split()[-1].strip('"')
 
 setup(

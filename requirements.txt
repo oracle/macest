@@ -1,8 +1,10 @@
-matplotlib==3.1.1
-numpy==1.22.0
-pandas==1.0.3
-scikit-learn==0.22.1
-scipy==1.4.1
-seaborn==0.11.0
-nmslib==2.0.6
+matplotlib==3.6.2
+numpy==1.24.0
+pandas==1.5.2
+scikit-learn==1.2.0
+scipy==1.9.3
+seaborn==0.12.1
+# TODO: add the below to the README or figure out to set CFLAGS in requirements.txt
+# CFLAGS="-mavx -DWARN(a)=(a)" 
+nmslib==2.1.1
 typing_extensions==3.7.4.3

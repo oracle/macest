@@ -1,8 +1,6 @@
 """Module containing plotting utility functions for use in example notebooks."""
 from typing import Optional, Tuple
 
-from matplotlib.axes import Axes
-
 from macest.classification.models import ModelWithConfidence
 from matplotlib import cm
 import matplotlib.pyplot as plt
@@ -30,15 +28,15 @@ def plot_prediction_conf_surface(low_range: float,
     fig, ax = plt.subplots(ncols=2, nrows=2,
                            figsize=(16, 12), )
 
-    h0 = ax[0, 0].tricontourf(x1_ne, x2_ne, sklearn_model.predict(points_ne),
-                              cmap=cm.get_cmap('rainbow', 2),
-                              alpha=.9)
+    _ = ax[0, 0].tricontourf(x1_ne, x2_ne, sklearn_model.predict(points_ne),
+                             cmap=cm.get_cmap('rainbow', 2),
+                             alpha=.9)
 
-    g0 = ax[0, 1].tricontourf(x1_ne, x2_ne,
-                              np.amax(sklearn_model.predict_proba(points_ne), axis=1),
-                              vmin=0.,
-                              vmax=1,
-                              cmap=cm.get_cmap('viridis'))
+    _ = ax[0, 1].tricontourf(x1_ne, x2_ne,
+                             np.amax(sklearn_model.predict_proba(points_ne), axis=1),
+                             vmin=0.,
+                             vmax=1,
+                             cmap=cm.get_cmap('viridis'))
 
     h1 = ax[1, 0].tricontourf(x1_fa, x2_fa, sklearn_model.predict(points_fa),
                               extend='both',
@@ -104,15 +102,15 @@ def plot_prediction_conf_surface_multiclass(low_range: float,
                               cmap=cm.get_cmap('rainbow', len(np.unique(y_pp_train))),
                               alpha=.9)
 
-    g0 = ax[0, 1].tricontourf(x1_ne, x2_ne,
-                              np.amax(sklearn_model.predict_proba(points_ne), axis=1),
-                              vmin=0.,
-                              vmax=1,
-                              cmap=cm.get_cmap('viridis'))
+    _ = ax[0, 1].tricontourf(x1_ne, x2_ne,
+                             np.amax(sklearn_model.predict_proba(points_ne), axis=1),
+                             vmin=0.,
+                             vmax=1,
+                             cmap=cm.get_cmap('viridis'))
 
-    h1 = ax[1, 0].tricontourf(x1_fa, x2_fa, sklearn_model.predict(points_fa),
-                              cmap=cm.get_cmap('rainbow', len(np.unique(y_pp_train))),
-                              alpha=.9)
+    _ = ax[1, 0].tricontourf(x1_fa, x2_fa, sklearn_model.predict(points_fa),
+                             cmap=cm.get_cmap('rainbow', len(np.unique(y_pp_train))),
+                             alpha=.9)
 
     g1 = ax[1, 1].tricontourf(x1_fa, x2_fa,
                               np.amax(sklearn_model.predict_proba(points_fa), axis=1),
@@ -170,16 +168,16 @@ def plot_macest_sklearn_comparison_surface(low_range: float,
     fig, ax = plt.subplots(ncols=2, nrows=2,
                            figsize=(16, 12), )
 
-    h0 = ax[0, 0].tricontourf(x1_ne, x2_ne,
-                              macest_model.predict_confidence_of_point_prediction(points_ne),
-                              vmin=0.,
-                              vmax=1,
-                              cmap=cm.viridis)
+    _ = ax[0, 0].tricontourf(x1_ne, x2_ne,
+                             macest_model.predict_confidence_of_point_prediction(points_ne),
+                             vmin=0.,
+                             vmax=1,
+                             cmap=cm.viridis)
 
-    g0 = ax[0, 1].tricontourf(x1_ne, x2_ne, np.amax(sklearn_model.predict_proba(points_ne), axis=1),
-                              vmin=0.,
-                              vmax=1,
-                              cmap=cm.viridis)
+    _ = ax[0, 1].tricontourf(x1_ne, x2_ne, np.amax(sklearn_model.predict_proba(points_ne), axis=1),
+                             vmin=0.,
+                             vmax=1,
+                             cmap=cm.viridis)
 
     if plot_training_data:
         ax[0, 0].scatter(X_pp_train[:, 0], X_pp_train[:, 1],
@@ -203,11 +201,11 @@ def plot_macest_sklearn_comparison_surface(low_range: float,
                      edgecolors='black',
                      cmap=cm.get_cmap('rainbow', 2))
 
-    g1 = ax[1, 1].tricontourf(x1_fa, x2_fa,
-                              np.amax(sklearn_model.predict_proba(points_fa), axis=1),
-                              vmin=0.,
-                              vmax=1.,
-                              cmap=cm.viridis)
+    _ = ax[1, 1].tricontourf(x1_fa, x2_fa,
+                             np.amax(sklearn_model.predict_proba(points_fa), axis=1),
+                             vmin=0.,
+                             vmax=1.,
+                             cmap=cm.viridis)
 
     ax[1, 1].scatter(X_pp_train[:, 0], X_pp_train[:, 1],
                      c=y_pp_train,
@@ -248,16 +246,16 @@ def plot_macest_sklearn_comparison_surface_multiclass(low_range: float,
     fig, ax = plt.subplots(ncols=2, nrows=2,
                            figsize=(16, 12), )
 
-    h0 = ax[0, 0].tricontourf(x1_ne, x2_ne,
-                              macest_model.predict_confidence_of_point_prediction(points_ne),
-                              vmin=0.,
-                              vmax=1,
-                              cmap=cm.viridis)
+    _ = ax[0, 0].tricontourf(x1_ne, x2_ne,
+                             macest_model.predict_confidence_of_point_prediction(points_ne),
+                             vmin=0.,
+                             vmax=1,
+                             cmap=cm.viridis)
 
-    g0 = ax[0, 1].tricontourf(x1_ne, x2_ne, np.amax(sklearn_model.predict_proba(points_ne), axis=1),
-                              vmin=0.,
-                              vmax=1,
-                              cmap=cm.viridis)
+    _ = ax[0, 1].tricontourf(x1_ne, x2_ne, np.amax(sklearn_model.predict_proba(points_ne), axis=1),
+                             vmin=0.,
+                             vmax=1,
+                             cmap=cm.viridis)
 
     if plot_training_data:
         ax[0, 0].scatter(X_pp_train[:, 0], X_pp_train[:, 1],
@@ -281,11 +279,11 @@ def plot_macest_sklearn_comparison_surface_multiclass(low_range: float,
                      edgecolors='black',
                      cmap=cm.get_cmap('rainbow', len(np.unique(y_pp_train))))
 
-    g1 = ax[1, 1].tricontourf(x1_fa, x2_fa,
-                              np.amax(sklearn_model.predict_proba(points_fa), axis=1),
-                              vmin=0.,
-                              vmax=1.,
-                              cmap=cm.viridis)
+    _ = ax[1, 1].tricontourf(x1_fa, x2_fa,
+                             np.amax(sklearn_model.predict_proba(points_fa), axis=1),
+                             vmin=0.,
+                             vmax=1.,
+                             cmap=cm.viridis)
 
     ax[1, 1].scatter(X_pp_train[:, 0], X_pp_train[:, 1],
                      c=y_pp_train,
@@ -365,8 +363,7 @@ def make_two_spirals(r: float,
     y_20 = r0 * np.sin(theta) + np.random.normal(0, noise, n_points)
 
     r1 = r * theta
-    x_21 = - r1 * np.cos(theta) + np.random.normal(-0.4
-                                                   , noise, n_points)
+    x_21 = - r1 * np.cos(theta) + np.random.normal(-0.4, noise, n_points)
     y_21 = - r1 * np.sin(theta) + np.random.normal(0.4, noise, n_points)
 
     return x_20, x_21, y_20, y_21
