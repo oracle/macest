@@ -38,21 +38,16 @@ class MergedBinData(NamedTuple):
     bin_num_correct: np.ndarray
 
 
-def histogram_max_conf_pred(
-        targets: Union[Sequence[int], np.ndarray],
-        predictions: Union[Sequence[int], np.ndarray],
-        point_prediction_conf: Union[Sequence[int], np.ndarray],
-        class_conf: Optional[Union[Sequence[float], np.ndarray]] = None,
-        n_bins: int = 10,
-        min_bin_size: int = 10,
-        merge_bins_below_threshold: bool = True,
-        bin_method: Literal["quantile", "uniform"] = "quantile",
-        check_conflicting_preds: bool = False,
-) -> HistogramPredsOutput:
-    """
-    Take a set of confidence estimates and groups them into bins of similar confidence, then
-        calculate the average confidence and accuracy fot that bin. This can then be used for
-        calibration metrics and plots.
+def histogram_max_conf_pred(targets: Union[Sequence[int], np.ndarray],
+                            predictions: Union[Sequence[int], np.ndarray],
+                            point_prediction_conf: Union[Sequence[int], np.ndarray],
+                            class_conf: Optional[Union[Sequence[float], np.ndarray]] = None,
+                            n_bins: int = 10,
+                            min_bin_size: int = 10,
+                            merge_bins_below_threshold: bool = True,
+                            bin_method: Literal["quantile", "uniform"] = "quantile",
+                            check_conflicting_preds: bool = False) -> HistogramPredsOutput:
+    """Calculate average confidence and accuracy for each confidence bin derived from estimates.
 
     :param targets: The true target y values
     :param predictions: The model point predictions
@@ -82,7 +77,7 @@ def histogram_max_conf_pred(
         bins = np.quantile(
             point_prediction_conf,
             np.arange(0.0, 1.01, quantile_increments),
-            interpolation="nearest",
+            method="nearest"
         )
     elif bin_method == "uniform":
         step_size = 1.0 / n_bins
@@ -139,7 +134,7 @@ def _merge_low_count_bins(
         if bin_count[idx] < min_bin_size:
             bin_count[idx + 1] = bin_count[idx] + bin_count[idx + 1]
             bin_confidence_sum[idx + 1] = (
-                    bin_confidence_sum[idx] + bin_confidence_sum[idx + 1]
+                bin_confidence_sum[idx] + bin_confidence_sum[idx + 1]
             )
             bin_num_correct[idx + 1] = bin_num_correct[idx] + bin_num_correct[idx + 1]
             bin_count[idx] = -1
@@ -199,13 +194,13 @@ def calculate_brier_decomposition(
     av_conf = bin_conf_sum[bins_to_keep] / bin_count
 
     calibration = (
-                      (((frac_correct - av_conf) ** 2) * bin_count).sum()
-                  ) / bin_count.sum()
+        (((frac_correct - av_conf) ** 2) * bin_count).sum()
+    ) / bin_count.sum()
     uncertainty = prediction_is_correct.mean() * (1 - prediction_is_correct.mean())
 
     resolution = (
-                     ((frac_correct - prediction_is_correct.mean()) ** 2 * bin_count).sum()
-                 ) / bin_count.sum()
+        ((frac_correct - prediction_is_correct.mean()) ** 2 * bin_count).sum()
+    ) / bin_count.sum()
 
     return BrierDecomposition(calibration, resolution, uncertainty)
 
