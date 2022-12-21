@@ -77,7 +77,7 @@ def histogram_max_conf_pred(targets: Union[Sequence[int], np.ndarray],
         bins = np.quantile(
             point_prediction_conf,
             np.arange(0.0, 1.01, quantile_increments),
-            interpolation="nearest",
+            method="nearest"
         )
     elif bin_method == "uniform":
         step_size = 1.0 / n_bins

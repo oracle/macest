@@ -5,6 +5,6 @@ scikit-learn==1.2.0
 scipy==1.9.3
 seaborn==0.12.1
 # TODO: add the below to the README or figure out to set CFLAGS in requirements.txt
-# CFLAGS="-mavx -DWARN(a)=(a)" 
+# CFLAGS="-mavx -DWARN(a)=(a)" nmslib==2.1.1
 nmslib==2.1.1
 typing_extensions==3.7.4.3

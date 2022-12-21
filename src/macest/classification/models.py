@@ -417,7 +417,7 @@ class ModelWithConfidence:
 
         training_data_type = type(self.x_train)
 
-        if training_data_type == scipy.sparse.csr.csr_matrix:
+        if training_data_type == scipy.sparse.csr_matrix:
             sparse_data = True
         else:
             sparse_data = False
@@ -431,13 +431,11 @@ class ModelWithConfidence:
 class _TrainingHelper(object):
     """Class which provides methods used when fitting MACEst model."""
 
-    def __init__(
-            self,
-            init_conf_model: ModelWithConfidence,
-            x_cal: np.ndarray,
-            y_cal: np.ndarray,
-            param_range: SearchBounds = SearchBounds(),
-    ):
+    def __init__(self,
+                 init_conf_model: ModelWithConfidence,
+                 x_cal: np.ndarray,
+                 y_cal: np.ndarray,
+                 param_range: SearchBounds = SearchBounds()) -> None:
         """
         Init.
 
