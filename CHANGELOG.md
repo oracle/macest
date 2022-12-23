@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Dependencies to work with Python 3.8.16.
 - Sparse matrix types to fix deprecation warnings.
 
+### Removed
+- Comparison to TemperatureScaling and FullDirichletCalibrator in state of the art comparison notebook due to 
+Scikit-learn label_binarizer backwards compatibility issues.
+
+
 ## [1.0.0] - 2021-06-10
 ### Added
 - Initial release to GitHub
