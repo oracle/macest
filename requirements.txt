@@ -5,6 +5,7 @@ scikit-learn==1.2.0
 scipy==1.9.3
 seaborn==0.12.1
 # If running on an M1 Macbook, then install nmslib using the following comamnd:
-# CFLAGS="-mavx -DWARN(a)=(a)" nmslib==2.1.1
-nmslib==2.1.1
+# CFLAGS="-mavx -DWARN(a)=(a)" pip install nmslib==2.1.1
+# nmslib==2.1.1
 typing_extensions==3.7.4.3
+    

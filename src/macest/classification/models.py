@@ -410,14 +410,14 @@ class ModelWithConfidence:
         init_args = self.search_method_args.init_args
 
         space = init_args['space']
-        if space[-6:] == 'sparse':
+        if 'sparse' in space:
             sparse_metric = True
         else:
             sparse_metric = False
 
         training_data_type = type(self.x_train)
 
-        if training_data_type == scipy.sparse.csr_matrix:
+        if training_data_type in [scipy.sparse.csr_matrix, scipy.sparse._csr.csr_matrix]:
             sparse_data = True
         else:
             sparse_data = False
@@ -425,7 +425,9 @@ class ModelWithConfidence:
         if sparse_metric != sparse_data:
             raise ValueError(
                 f'Training data type and space are not compatible, your space is {space} '
-                f'and training data type is {training_data_type}')
+                f'and training data type is {training_data_type}.' 
+                f'Sparse metric: {sparse_metric}. Sparse data: {sparse_data}. '
+                f'Initialisation args: {init_args}.')
 
 
 class _TrainingHelper(object):
