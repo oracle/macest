@@ -207,7 +207,7 @@ To use MACEst for a regression task, the following example can be used:
 ### MACEst with sparse data (see notebooks for more details)
 ```python
 import scipy
-from scipy.sparse import csr_matrix s
+from scipy.sparse import csr_matrix
 from scipy.sparse import random as sp_rand
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
