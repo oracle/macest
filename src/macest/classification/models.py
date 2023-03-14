@@ -186,18 +186,15 @@ class ModelWithConfidence:
             self.graph = prec_graph
         return self.graph
 
-    def calc_dist_to_neighbours(
-            self, x_star: np.ndarray, cls: int
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """
-        Calculate the distance to nearest neighbours, the index of them within the class graph and
-        the number of errors on those k neighbours.
+    def calc_dist_to_neighbours(self,
+                                x_star: np.ndarray,
+                                cls: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Calculate the distance to nearest neighbours.
 
         :param x_star: The point(s) we want to find the neighbours for
         :param cls: The target class, we ony want to find neighbours from one class at a time
 
-        :return: The distance to k nearest neighbours and the indices of the k closest neighbours
-            in the class graph
+        :return: The distance to k nearest neighbours and the indices of the k closest neighbours in the class graph.
         """
         if (self.distance_to_neighbours and self.index_of_neighbours) is None:
             if self.graph is None:
@@ -285,19 +282,15 @@ class ModelWithConfidence:
             )
         return relative_conf
 
-    def predict_confidence_of_point_prediction(
-            self, x_star: np.ndarray, change_conflicts: bool = False,
-    ) -> np.ndarray:
-        """
-        Estimate a single confidence score, this represents the confidence of the point prediction
-        being correct rather than a confidence score for each class.
+    def predict_confidence_of_point_prediction(self,
+                                               x_star: np.ndarray,
+                                               change_conflicts: bool = False) -> np.ndarray:
+        """Estimate a single confidence score of the point prediction being correct.
 
-        :param x_star: The point to predict confidently
-        :param change_conflicts: Boolean, true means conflicting predictions between macest and
-            point prediction are set to an empirical constant
+        :param x_star: The point to predict confidently.
+        :param change_conflicts: If true, set conflicting predictions between MACEst and point prediction to constant.
 
-        :return: The confidence in the point prediction being correct
-
+        :return: The confidence in the point prediction being correct.
         """
         if self.point_preds is not None:
             point_prediction = self.point_preds
@@ -311,29 +304,24 @@ class ModelWithConfidence:
         ].clip(max=1 - 10 ** -15)
         return point_prediction_confidence
 
-    def _calc_relative_distance_softmax_normalisation(
-            self, average_distance_error_func: np.ndarray,
-    ) -> np.ndarray:
-        """
-        Take a vector of distance functions, we then scale these by the mean distance across
-        classes so that we have the relative distances between then, this vector is then normalised
-        these via temperature scaled softmax.
+    def _calc_relative_distance_softmax_normalisation(self,
+                                                      average_distance_errors: np.ndarray) -> np.ndarray:
+        """Scale and normalise average distance errors.
 
-        :param average_distance_error_func:
+        :param average_distance_errors: Numpy array of averge distance errors.
         :return: The confidence estimates for each class after normalising via softmax
-
         """
-        average_distance_error_func = (
-                self._temp
-                * average_distance_error_func
-                / np.median(average_distance_error_func, axis=0)
+        average_distance_errors = (
+            self._temp
+            * average_distance_errors
+            / np.median(average_distance_errors, axis=0)
         )
-        relative_conf = softmax(-average_distance_error_func.T, axis=1)
+        relative_conf = softmax(-average_distance_errors.T, axis=1)
         return relative_conf
 
-    def _renormalise_conf_with_empirical_constant(
-            self, x_star: np.ndarray, conf_array: np.ndarray
-    ) -> np.ndarray:
+    def _renormalise_conf_with_empirical_constant(self,
+                                                  x_star: np.ndarray,
+                                                  conf_array: np.ndarray) -> np.ndarray:
         """
         Change conflicting predictions to the empirically learnt constant probability learnt during \
         training, by default this feature will be off as it can introduce bias.
@@ -349,7 +337,7 @@ class ModelWithConfidence:
                 conf_array[idx, point_prediction[idx]] = 0.0
                 conf_array[idx] = conf_array[idx] / conf_array[idx].sum()
                 conf_array[idx] = conf_array[idx] * (
-                        1 - self.empirical_conflict_constant
+                    1 - self.empirical_conflict_constant
                 )
                 conf_array[
                     idx, point_prediction[idx]
@@ -357,13 +345,12 @@ class ModelWithConfidence:
 
         return conf_array
 
-    def find_conflicting_predictions(self, x_star: np.ndarray) -> np.ndarray:
-        """
-        Find predictions where max confidence according to macest is different to the point
-        prediction.
+    def find_conflicting_predictions(self,
+                                     x_star: np.ndarray) -> np.ndarray:
+        """Find predictions where max confidence according to MACEst is different to the point prediction.
 
-        :param x_star:
-        :return:
+        :param x_star: Input feature vector.
+        :return: Numpy array containing the conflicting predictions.
         """
         class_confidence = self.predict_proba(x_star, )
         point_prediction = self.predict(x_star, )
@@ -373,13 +360,11 @@ class ModelWithConfidence:
         ).flatten()
         return conflicting_predictions
 
-    def fit(
-            self,
+    def fit(self,
             x_cal: np.ndarray,
             y_cal: np.ndarray,
             param_range: SearchBounds = SearchBounds(),
-            optimiser_args: Optional[Dict[Any, Any]] = None,
-    ) -> None:
+            optimiser_args: Optional[Dict[Any, Any]] = None) -> None:
         """
         Fit MACEst model using the calibration data.
 
@@ -425,14 +410,14 @@ class ModelWithConfidence:
         init_args = self.search_method_args.init_args
 
         space = init_args['space']
-        if space[-6:] == 'sparse':
+        if 'sparse' in space:
             sparse_metric = True
         else:
             sparse_metric = False
 
         training_data_type = type(self.x_train)
 
-        if training_data_type == scipy.sparse.csr.csr_matrix:
+        if training_data_type in [scipy.sparse.csr_matrix, scipy.sparse._csr.csr_matrix]:
             sparse_data = True
         else:
             sparse_data = False
@@ -440,19 +425,19 @@ class ModelWithConfidence:
         if sparse_metric != sparse_data:
             raise ValueError(
                 f'Training data type and space are not compatible, your space is {space} '
-                f'and training data type is {training_data_type}')
+                f'and training data type is {training_data_type}.' 
+                f'Sparse metric: {sparse_metric}. Sparse data: {sparse_data}. '
+                f'Initialisation args: {init_args}.')
 
 
 class _TrainingHelper(object):
     """Class which provides methods used when fitting MACEst model."""
 
-    def __init__(
-            self,
-            init_conf_model: ModelWithConfidence,
-            x_cal: np.ndarray,
-            y_cal: np.ndarray,
-            param_range: SearchBounds = SearchBounds(),
-    ):
+    def __init__(self,
+                 init_conf_model: ModelWithConfidence,
+                 x_cal: np.ndarray,
+                 y_cal: np.ndarray,
+                 param_range: SearchBounds = SearchBounds()) -> None:
         """
         Init.
 
@@ -553,9 +538,7 @@ class _TrainingHelper(object):
         return params
 
     def loss(self, params: MacestConfModelParams) -> float:
-        """
-        Return the loss for a given set of MACEst parameters, this will be optimised to find
-            optimal parameters.
+        """Return the loss for a given set of MACEst parameters, this will be optimised to find optimal parameters.
 
         :param params: A tuple containing the model parameters
         :return: The ece loss function for the model

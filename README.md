@@ -99,15 +99,23 @@ uniform distribution, this can be interpreted as MACEst saying "I don't know wha
 I've never seen an image of a horse!".
 
 ## Getting Started
-To install MACEst run the following cmd:
+Create a virtual environment and source into it:
 ```shell script
+python -m venv venv
+source venv/bin/activate
+```
+
+Install dependencies and MACEst:
+```
+pip install -r requirements.txt
+pip install -r requirements_notebooks.txt
 pip install macest
 ```
 
 Or add `macest` to your project's `requirements.txt` file as a dependency. 
 
 ### Software Prerequisites
-To import and use MACEst we recommend Python version >= `3.6.8`. 
+To import and use MACEst we recommend Python version >= `3.8.16`. 
 
 ## Basic Usage
 Below shows examples of using MACEst for classification and regression.
@@ -199,7 +207,7 @@ To use MACEst for a regression task, the following example can be used:
 ### MACEst with sparse data (see notebooks for more details)
 ```python
 import scipy
-from scipy.sparse import csr_matrix 
+from scipy.sparse import csr_matrix
 from scipy.sparse import random as sp_rand
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
