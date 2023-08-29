@@ -263,7 +263,7 @@ Estimator](https://arxiv.org/abs/2109.01531). Rhys Green, Matthew Rowe, and Albe
 Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
 
 ## License
-Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2021, 2023 Oracle and/or its affiliates. All rights reserved.
 
 This library is licensed under Universal Permissive License (UPL) 1.0 as shown at 
 https://oss.oracle.com/licenses/upl
