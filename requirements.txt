@@ -1,7 +1,7 @@
 matplotlib==3.6.2
 numpy==1.24.0
 pandas==1.5.2
-scikit-learn==1.2.0
+scikit-learn==1.5.1
 scipy==1.10.0
 seaborn==0.12.1
 # If running on an M1 Macbook, then install nmslib using the following comamnd:
