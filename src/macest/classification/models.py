@@ -202,7 +202,8 @@ class ModelWithConfidence:
             neighbours = np.array(
                 self.graph[cls].knnQueryBatch(  # type: ignore
                     x_star, k=self._num_neighbours, num_threads=num_threads_available
-                )
+                ),
+                dtype='float32',
             )
             class_dist = neighbours[:, 1, :].clip(min=10 ** -15)
             class_ind = neighbours[:, 0, :].astype(int)
@@ -210,7 +211,8 @@ class ModelWithConfidence:
                 raise ValueError("training_preds_by_class has already been cached")
             class_preds = self.training_preds_by_class[cls]
             class_error = np.array(
-                [class_preds[class_ind[j]] != cls for j in range(x_star.shape[0])]
+                [class_preds[class_ind[j]] != cls for j in range(x_star.shape[0])],
+                dtype='bool',
             )
         else:
             if self.distance_to_neighbours is None:
@@ -492,7 +494,8 @@ class _TrainingHelper(object):
             max_neighbours = np.array(
                 self.model.graph[class_num].knnQueryBatch(  # type: ignore
                     self.x_cal, k=max_nbrs, num_threads=num_threads_available
-                )
+                ),
+                dtype='float32',
             )
             max_dist = max_neighbours[x_cal_len_array, 1]
             max_ind = max_neighbours[x_cal_len_array, 0]
@@ -504,7 +507,8 @@ class _TrainingHelper(object):
                     [
                         cls_preds[ind[j].astype(int)] != class_num
                         for j in range(self.x_cal.shape[0])
-                    ]
+                    ],
+                    dtype='bool',
                 )  # type: ignore
 
                 dist_dict[k] = dist
