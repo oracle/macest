@@ -99,14 +99,16 @@ uniform distribution, this can be interpreted as MACEst saying "I don't know wha
 I've never seen an image of a horse!".
 
 ## Getting Started
+We recommend using Python 3.10 for MACEst.
+
 Create a virtual environment and source into it:
-```shell script
-python -m venv venv
+```bash
+python3.10 -m venv venv
 source venv/bin/activate
 ```
 
-Install dependencies and MACEst:
-```
+Install dependencies and MACEst: 
+```bash
 pip install -r requirements.txt
 pip install -r requirements_notebooks.txt
 pip install macest
@@ -115,7 +117,7 @@ pip install macest
 Or add `macest` to your project's `requirements.txt` file as a dependency. 
 
 ### Software Prerequisites
-To import and use MACEst we recommend Python version >= `3.8.16`. 
+To import and use MACEst we recommend Python version >= `3.10.*`. 
 
 ## Basic Usage
 Below shows examples of using MACEst for classification and regression.

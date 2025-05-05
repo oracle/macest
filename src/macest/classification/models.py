@@ -425,7 +425,7 @@ class ModelWithConfidence:
         if sparse_metric != sparse_data:
             raise ValueError(
                 f'Training data type and space are not compatible, your space is {space} '
-                f'and training data type is {training_data_type}.' 
+                f'and training data type is {training_data_type}.'
                 f'Sparse metric: {sparse_metric}. Sparse data: {sparse_data}. '
                 f'Initialisation args: {init_args}.')
 
