@@ -1,6 +1,6 @@
-pytest==5.1.2
-tox==3.13.2
-flake8==3.7.8
-mypy==0.720
-setuptools==70.0.0
-importlib-metadata==1.6.1
+pytest==8.3.5
+tox==4.25.0
+flake8==7.2.0
+mypy==1.15.0
+importlib_metadata==8.7.0
+typed-ast==1.5.5
