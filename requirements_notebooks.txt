@@ -3,7 +3,7 @@ dirichletcal==0.3.dev4
 ipykernel==5.5.5
 jax==0.2.17
 jaxlib==0.3.0
-jupyterlab==3.6.8
+jupyterlab==4.4.8
 tqdm==4.66.3
 ipywidgets==8.0.3
 # widgetsnbextension==4.0.4
